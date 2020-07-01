@@ -1,11 +1,11 @@
-version: '3.7'
+version: '2'
 
 services:
   server:
     image: caddy:alpine
     restart: always
     environment: 
-      - APP_URL=https://localhost
+     # - APP_URL=https://localhost
     volumes:
       # Vhost configuration
       - ./config/caddy/Caddyfile:/etc/caddy/Caddyfile
@@ -22,17 +22,16 @@ services:
     # Run webserver nginx on port 80
     # Feel free to modify depending what port is already occupied
     ports: 
-      - "80:80"
-      - "443:443"
-    networks:
-      - invoiceninja
+      - "33080:80"
+      - "33443:443"
+
 
   app:
     image: invoiceninja/invoiceninja:5
     restart: always
     environment: 
-      - APP_URL=https://localhost
-      - APP_KEY=<INSERT THE GENERATED APPLICATION KEY HERE>
+     # - APP_URL=https://localhost
+     # - APP_KEY=<INSERT THE GENERATED APPLICATION KEY HERE>
       - MULTI_DB_ENABLED=false
       - DB_HOST1=db
     volumes:
@@ -45,14 +44,13 @@ services:
       # - ./docker/app/storage:/var/www/app/storage:rw,delegated
     depends_on:
       - db
-    networks: 
-      - invoiceninja  
+ 
 
   db:
     image: mysql:5
     restart: always
     environment: 
-      - MYSQL_ROOT_PASSWORD=ninjaAdm1nPassword
+   #   - MYSQL_ROOT_PASSWORD=ninjaAdm1nPassword
       - MYSQL_USER=ninja
       - MYSQL_PASSWORD=ninja
       - MYSQL_DATABASE=db-ninja-01
@@ -60,8 +58,7 @@ services:
       - mysql-data:/var/lib/mysql:rw
       # you may use a bind-mounted host directory instead, so that it is harder to accidentally remove the volume and lose all your data!
       # - ./docker/mysql/data:/var/lib/mysql:rw,delegated
-    networks:
-      - invoiceninja
+
 
  
   # cron:
@@ -87,6 +84,3 @@ volumes:
   mysql-data:
   public:
   storage:
-
-networks:
-  invoiceninja:
